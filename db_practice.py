@@ -54,8 +54,8 @@ list = [
 
 with engine.connect() as conn:
     conn.execute(text(sql_create_table)) # Creates the table in sql.
-    conn.execute(text(sql_insert_command), list) # commits values to DB. 
-    conn.commit()
+    conn.execute(text(sql_insert_command), list) # adds values to table.
+    conn.commit() # Commits values to db. 
 
 # Basic query.
 sql_query_command = "SELECT x, y FROM some_table"
