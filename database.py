@@ -21,6 +21,7 @@ def create_table(engine):
         conn.commit()
 
 def add_data(engine, data):
+    """Adds data to table with current schema"""
     sql_insert_command = """INSERT INTO 
                                 some_table (name, age) 
                             VALUES 
@@ -29,4 +30,22 @@ def add_data(engine, data):
         conn.execute(text(sql_insert_command), data) # adds values to table.
         conn.commit() # Commits values to db.
         return True
-    return False
+
+def of_age_user(engine, age):
+    """checks if user is greater than or equal to specified age."""
+    sql_query_command = f"""
+                        SELECT
+                            name
+                        FROM
+                            some_table
+                        WHERE
+                            age >= :age
+                        """
+    with engine.connect() as conn:
+        print(conn)
+        results = conn.execute(text(sql_query_command), {"age": age})
+        names = []
+        for name in results:
+            names.append(name)
+        return names
+
