@@ -33,6 +33,7 @@ sql_create_table = "CREATE TABLE some_table (x int, y int)"
 sql_insert_command = "INSERT INTO some_table (x, y) VALUES (:x, :y)"
 
 '''
+# Commented for other commands. 
 with engine.connect() as conn:
     conn.execute(text(sql_create_table))
     conn.execute(text(sql_insert_command), [{"x": 1, "y": 1}, {"x": 2, "y": 4}],)
@@ -48,7 +49,6 @@ list = [
     {"x": 6, "y": 16},
     {"x": 7, "y": 19},
     {"x": 8, "y": 22},
-    {"x": 9, "y": 25},
     {"x": 10, "y": 28}
     ]
 
@@ -65,6 +65,7 @@ with engine.connect() as conn:
     for result in results:
         logging.info(result)
 
+
 sql_query_command = """
                     SELECT
                         x,
@@ -72,9 +73,37 @@ sql_query_command = """
                     FROM
                         some_table
                     WHERE
-                        y > :y"""
+                        y > :y
+                    ORDER BY
+                        x ASC
+                    """
 
 with engine.connect() as conn:
     results = conn.execute(text(sql_query_command), {"y": 10})
     for result in results:
         logging.info(result)
+
+sql_insert_command = """
+                     INSERT INTO
+                        some_table (x,y)
+                     VALUES
+                        (:x, :y)
+                     """
+
+list = [
+        {"x": 9, "y": 25},
+        {"x": 11, "y": 31},
+        {"x": 12, "y": 34}
+       ]
+
+with engine.connect() as conn:
+    conn.execute(text(sql_insert_command), list)
+    conn.commit()
+
+with engine.connect() as conn:
+    results = conn.execute(text(sql_query_command), {"y": 10})
+    for result in results:
+        logging.info(result)
+
+
+
