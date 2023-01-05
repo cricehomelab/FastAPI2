@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, text, Table, Column, Integer, String, MetaData
 
 
 
@@ -9,6 +9,19 @@ def create_connection(name):
 
 def create_table(engine):
     """Creates the table for the database."""
+
+    metadata_obj = MetaData()
+
+    new_table = Table(
+        "some_table",
+        metadata_obj,
+        Column("id", Integer, primary_key=True),
+        Column("name", String(30)),
+        Column("age", Integer),
+    )
+    metadata_obj.create_all(engine)
+    
+    '''
     sql_create_table_command = """
                                CREATE TABLE 
                                    some_table
@@ -19,6 +32,7 @@ def create_table(engine):
     with engine.connect() as conn:
         conn.execute(text(sql_create_table_command))
         conn.commit()
+    '''
 
 def add_data(engine, data):
     """Adds data to table with current schema"""
@@ -48,4 +62,5 @@ def of_age_user(engine, age):
         for name in results:
             names.append(name)
         return names
+
 
