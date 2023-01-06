@@ -1,5 +1,16 @@
-from sqlalchemy import create_engine, text, Table, Column, Integer, String, MetaData
+from sqlalchemy import create_engine, text, Table, Column, Integer, String, MetaData, insert
+from sqlalchemy.orm import registry, relationship, declarative_base
 
+mapper_registry = registry()
+Base = declarative_base()
+
+
+class Person(Base):
+    __tablename__  = "some_table"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(30))
+    age = Column(Integer)
 
 
 def create_connection(name):
@@ -20,30 +31,28 @@ def create_table(engine):
         Column("age", Integer),
     )
     metadata_obj.create_all(engine)
-    
-    '''
-    sql_create_table_command = """
-                               CREATE TABLE 
-                                   some_table
-                                (id integer PRIMARY KEY,
-                                 name text,
-                                 age integer)
-                               """
-    with engine.connect() as conn:
-        conn.execute(text(sql_create_table_command))
-        conn.commit()
-    '''
 
 def add_data(engine, data):
     """Adds data to table with current schema"""
+    
+    for num, person in enumerate(data):
+        people = (insert(Table).values(name=person["name"], age=person["age"]))
+        print(people.compile())
+        with engine.connect() as conn:
+            conn.execute(people)
+            conn.commit()
+
+
+    '''
     sql_insert_command = """INSERT INTO 
                                 some_table (name, age) 
                             VALUES 
                                 (:name, :age)"""
-    with engine.connect() as conn:
+    with engine.connect() as conn:        
         conn.execute(text(sql_insert_command), data) # adds values to table.
         conn.commit() # Commits values to db.
         return True
+    '''
 
 def of_age_user(engine, age):
     """checks if user is greater than or equal to specified age."""
