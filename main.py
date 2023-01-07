@@ -19,13 +19,13 @@ def main():
     logging.info("Creating and populating tables if they do not exist.")
     if not os.path.isfile(DATABASE_PATH):
         logging.info(f"{DATABASE_PATH} not found creating file.")
-        database.create_table(engine)
+        new_table = database.create_table(engine)
         logging.info("adding some data to the table.")
-        complete = database.add_data(engine, ingest.list)
+        complete = database.add_data(engine, new_table, ingest.list)
         logging.info(f"Was data added?: {complete}")
 
         logging.info("adding some more data.")
-        complete = database.add_data(engine, ingest.list2)
+        complete = database.add_data(engine, new_table, ingest.list2)
         logging.info(f"Was data added?: {complete}")
     else:
         logging.info(f"{DATABASE_PATH} already exists.")

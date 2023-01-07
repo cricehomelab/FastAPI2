@@ -31,13 +31,13 @@ def create_table(engine):
         Column("age", Integer),
     )
     metadata_obj.create_all(engine)
+    return new_table
 
-def add_data(engine, data):
+def add_data(engine, metadata_obj, data):
     """Adds data to table with current schema"""
     
     for num, person in enumerate(data):
-        people = (insert(Table).values(name=person["name"], age=person["age"]))
-        print(people.compile())
+        people = insert(metadata_obj).values(name=person["name"], age=person["age"])
         with engine.connect() as conn:
             conn.execute(people)
             conn.commit()
